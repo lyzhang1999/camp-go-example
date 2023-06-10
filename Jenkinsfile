@@ -30,6 +30,8 @@ spec:
     }
     environment {
         IMAGE_PUSH_DESTINATION="lyzhang1999/camp-go-example"
+        GIT_COMMIT="${checkout (scm).GIT_COMMIT}"
+        BUILD_IMAGE="${IMAGE_PUSH_DESTINATION}:${GIT_COMMIT}"
     }
     stages {
         stage('Build with Kaniko') {
@@ -38,7 +40,7 @@ spec:
                 container(name: 'kaniko', shell: '/busybox/sh') {
                     withEnv(['PATH+EXTRA=/busybox']) {
                         sh '''#!/busybox/sh
-                            /kaniko/executor --force --context `pwd` --insecure --skip-tls-verify --cache=true --destination $IMAGE_PUSH_DESTINATION
+                            /kaniko/executor --force --context `pwd` --insecure --skip-tls-verify --cache=true --destination $BUILD_IMAGE
                         '''
                     }
                 }
