@@ -38,7 +38,7 @@ spec:
                 container(name: 'kaniko', shell: '/busybox/sh') {
                     withEnv(['PATH+EXTRA=/busybox']) {
                         sh '''#!/busybox/sh
-                            /kaniko/executor --context `pwd` --insecure --skip-tls-verify --cache=true --destination $IMAGE_PUSH_DESTINATION
+                            /kaniko/executor --force --context `pwd` --insecure --skip-tls-verify --cache=true --destination $IMAGE_PUSH_DESTINATION
                         '''
                     }
                 }
