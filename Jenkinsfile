@@ -37,6 +37,9 @@ spec:
     stages {
         stage('Build with Kaniko') {
             steps {
+                script {
+                    properties([pipelineTriggers([pollSCM('* * * * *')])])
+                }
                 // checkout scm
                 container(name: 'kaniko', shell: '/busybox/sh') {
                     withEnv(['PATH+EXTRA=/busybox']) {
