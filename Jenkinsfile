@@ -29,7 +29,8 @@ spec:
         }
     }
     environment {
-        IMAGE_PUSH_DESTINATION="${sh(returnStdout: true, script: 'printenv HARBOR_URL')}/library/camp-go-example"
+        HARBOR_URL     = credentials('gitlab-token')
+        IMAGE_PUSH_DESTINATION="${HARBOR_URL}/library/camp-go-example"
         GIT_COMMIT="${checkout (scm).GIT_COMMIT}"
         BUILD_IMAGE="${IMAGE_PUSH_DESTINATION}:${GIT_COMMIT}"
     }
