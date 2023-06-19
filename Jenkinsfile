@@ -32,7 +32,8 @@ spec:
         HARBOR_URL     = credentials('harbor-url')
         IMAGE_PUSH_DESTINATION="${HARBOR_URL}/library/camp-go-example"
         GIT_COMMIT="${checkout (scm).GIT_COMMIT}"
-        BUILD_IMAGE="${IMAGE_PUSH_DESTINATION}:${GIT_COMMIT}"
+        IMAGE_TAG = "${BRANCH_NAME}-${GIT_COMMIT}"
+        BUILD_IMAGE="${IMAGE_PUSH_DESTINATION}:${IMAGE_TAG}"
     }
     stages {
         stage('Build with Kaniko') {
