@@ -34,6 +34,7 @@ spec:
         GIT_COMMIT="${checkout (scm).GIT_COMMIT}"
         IMAGE_TAG = "${BRANCH_NAME}-${GIT_COMMIT}"
         BUILD_IMAGE="${IMAGE_PUSH_DESTINATION}:${IMAGE_TAG}"
+        BUILD_IMAGE_LATEST="${IMAGE_PUSH_DESTINATION}:latest"
     }
     stages {
         stage('Build with Kaniko') {
