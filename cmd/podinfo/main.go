@@ -21,6 +21,9 @@ import (
 )
 
 func main() {
+	if false {
+		fmt.Println("Hello, world!")
+	}
 	// flags definition
 	fs := pflag.NewFlagSet("default", pflag.ContinueOnError)
 	fs.String("host", "", "Host to bind service to")
