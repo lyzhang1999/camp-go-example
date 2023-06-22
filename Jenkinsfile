@@ -62,7 +62,7 @@ spec:
                     properties([pipelineTriggers([pollSCM('* * * * *')])])
                 }
                 container(name: 'sonar-scanner', shell: '/bin/sh') {
-                    withSonarQubeEnv() {
+                    withSonarQubeEnv('camp-go-example') {
                         sh '''#!/bin/sh
                             sonar-scanner
                         '''
