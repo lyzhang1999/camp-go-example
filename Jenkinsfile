@@ -62,9 +62,11 @@ spec:
                     properties([pipelineTriggers([pollSCM('* * * * *')])])
                 }
                 container(name: 'sonar-scanner', shell: '/bin/sh') {
-                    sh '''#!/bin/sh
-                        sonar-scanner
-                    '''
+                    withSonarQubeEnv('sonar') {
+                        sh '''#!/bin/sh
+                            sonar-scanner
+                        '''
+                    }
                 }
                 timeout(time: 1, unit: 'HOURS') {
                     waitForQualityGate abortPipeline: true
