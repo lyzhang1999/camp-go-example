@@ -54,7 +54,7 @@ spec:
                 HARBOR_URL     = credentials('harbor-url')
                 SONAR_TOKEN     = credentials('sonarqube-token')
                 SONAR_SCANNER_OPTS = "-Dsonar.projectKey=camp-go-example"
-                SONAR_HOST_URL = "http://sonar.${HARBOR_URL.replaceAll('harbor','')}."
+                SONAR_HOST_URL = "http://sonar${HARBOR_URL.replaceAll('harbor','')}."
             }
 
             steps {
