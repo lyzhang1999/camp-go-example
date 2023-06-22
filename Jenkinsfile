@@ -23,12 +23,10 @@ spec:
                 script {
                     properties([pipelineTriggers([pollSCM('* * * * *')])])
                 }
-                container(name: 'golang', shell: '/busybox/sh') {
-                    withEnv(['PATH+EXTRA=/busybox']) {
-                        sh '''#!/busybox/sh
-                            go test ./... -coverprofile cover.out
-                        '''
-                    }
+                container(name: 'golang', shell: '/bin/sh') {
+                    sh '''#!/bin/sh
+                        go test ./... -coverprofile cover.out
+                    '''
                 }
             }
         }
