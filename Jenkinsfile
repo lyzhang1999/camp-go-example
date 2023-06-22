@@ -31,6 +31,44 @@ spec:
             }
         }
 
+        stage('Scan Code with Sonarqube') {
+            agent {
+                kubernetes {
+                    defaultContainer 'sonar-scanner'
+                    yaml """
+kind: Pod
+spec:
+  containers:
+  - name: sonar-scanner
+    image: sonarsource/sonar-scanner-cli:latest
+    imagePullPolicy: Always
+    command:
+    - sleep
+    args:
+    - 99d
+"""
+                }
+            }
+
+            environment {
+                HARBOR_URL     = credentials('harbor-url')
+                SONAR_TOKEN     = credentials('sonarqube-token')
+                SONAR_SCANNER_OPTS = "-Dsonar.projectKey=camp-go-example"
+                SONAR_HOST_URL = "http://sonar.${HARBOR_URL.replaceAll('harbor','')}."
+            }
+
+            steps {
+                script {
+                    properties([pipelineTriggers([pollSCM('* * * * *')])])
+                }
+                container(name: 'sonar-scanner', shell: '/bin/sh') {
+                    sh '''#!/bin/sh
+                        sonar-scanner
+                    '''
+                }
+            }
+        }
+
         stage('Build with Kaniko') {
             agent {
                 kubernetes {
