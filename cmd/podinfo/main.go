@@ -21,7 +21,7 @@ import (
 )
 
 func main() {
-	if false {
+	if true {
 		fmt.Println("Hello, world!")
 	}
 	// flags definition
