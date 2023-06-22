@@ -52,12 +52,12 @@ spec:
   volumes:
   - name: jenkins-docker-cfg
     projected:
-    sources:
-    - secret:
+      sources:
+      - secret:
         name: regcred
         items:
-          - key: .dockerconfigjson
-            path: config.json
+        - key: .dockerconfigjson
+          path: config.json
 """
                 }
             }
@@ -71,7 +71,7 @@ spec:
                 BUILD_IMAGE="${IMAGE_PUSH_DESTINATION}:${IMAGE_TAG}"
                 BUILD_IMAGE_LATEST="${IMAGE_PUSH_DESTINATION}:latest"
             }
-            
+
             steps {
                 script {
                     properties([pipelineTriggers([pollSCM('* * * * *')])])
