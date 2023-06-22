@@ -1,7 +1,7 @@
 pipeline {
     agent none
     stages {
-        state('Unit Test') {
+        stage('Unit Test') {
             agent {
                 kubernetes {
                     defaultContainer 'golang'
@@ -32,7 +32,7 @@ containers:
                 }
             }
         }
-        
+
         stage('Build with Kaniko') {
             agent {
                 kubernetes {
