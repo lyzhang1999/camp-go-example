@@ -1,16 +1,5 @@
 pipeline {
     agent none
-    
-    environment {
-        HARBOR_URL     = credentials('harbor-url')
-        HARBOR_REPOSITORY     = credentials('harbor-repository')
-        IMAGE_PUSH_DESTINATION="${HARBOR_URL}/${HARBOR_REPOSITORY}/camp-go-example"
-        GIT_COMMIT="${checkout (scm).GIT_COMMIT}"
-        IMAGE_TAG = "${BRANCH_NAME}-${GIT_COMMIT}"
-        BUILD_IMAGE="${IMAGE_PUSH_DESTINATION}:${IMAGE_TAG}"
-        BUILD_IMAGE_LATEST="${IMAGE_PUSH_DESTINATION}:latest"
-    }
-
     stages {
         stage('Unit Test') {
             agent {
@@ -72,6 +61,17 @@ spec:
 """
                 }
             }
+
+            environment {
+                HARBOR_URL     = credentials('harbor-url')
+                HARBOR_REPOSITORY     = credentials('harbor-repository')
+                IMAGE_PUSH_DESTINATION="${HARBOR_URL}/${HARBOR_REPOSITORY}/camp-go-example"
+                GIT_COMMIT="${checkout (scm).GIT_COMMIT}"
+                IMAGE_TAG = "${BRANCH_NAME}-${GIT_COMMIT}"
+                BUILD_IMAGE="${IMAGE_PUSH_DESTINATION}:${IMAGE_TAG}"
+                BUILD_IMAGE_LATEST="${IMAGE_PUSH_DESTINATION}:latest"
+            }
+            
             steps {
                 script {
                     properties([pipelineTriggers([pollSCM('* * * * *')])])
