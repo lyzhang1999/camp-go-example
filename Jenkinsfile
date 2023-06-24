@@ -138,7 +138,7 @@ kind: Pod
 spec:
   containers:
   - name: cosign
-    image: bitnami/minideb:bullseye
+    image: lyzhang1999/cosign:latest@sha256:352f89f88d9fcf596a1e279e1f1d713cee677f5c75962691b879d9274925b851
     imagePullPolicy: Always
     command:
     - sleep
@@ -146,9 +146,9 @@ spec:
     - 99d
     volumeMounts:
       - name: jenkins-docker-cfg
-        mountPath: /.docker
+        mountPath: /root/.docker
       - name: cosign-key
-        mountPath: /cosign-keys
+        mountPath: /root
   volumes:
   - name: jenkins-docker-cfg
     projected:
@@ -189,11 +189,7 @@ spec:
                 
                 container(name: 'cosign', shell: '/bin/sh') {
                     sh '''#!/bin/sh
-                        curl -O -L "https://github.com/sigstore/cosign/releases/latest/download/cosign-linux-amd64"
-                        mv cosign-linux-amd64 /usr/local/bin/cosign
-                        chmod +x /usr/local/bin/cosign
-
-                        COSIGN_PASSWORD=$COSIGN_KEY_PASSWORD cosign sign --key cosign.key $BUILD_IMAGE -y
+                        COSIGN_PASSWORD=$COSIGN_KEY_PASSWORD cosign sign --key /root/cosign.key $BUILD_IMAGE_LATEST -y
                     '''
                 }
             }
