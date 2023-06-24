@@ -130,6 +130,7 @@ spec:
         }
 
         stage('Cosign Image') {
+            options { skipDefaultCheckout() }
             agent {
                 kubernetes {
                     defaultContainer 'cosign'
