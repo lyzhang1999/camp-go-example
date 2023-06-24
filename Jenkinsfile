@@ -179,7 +179,6 @@ spec:
                 IMAGE_TAG = "${BRANCH_NAME}-${GIT_COMMIT}"
                 BUILD_IMAGE="${IMAGE_PUSH_DESTINATION}:${IMAGE_TAG}"
                 BUILD_IMAGE_LATEST="${IMAGE_PUSH_DESTINATION}:latest"
-                COSIGN_PASSWORD="${COSIGN_KEY_PASSWORD}"
             }
 
             steps {
@@ -189,7 +188,7 @@ spec:
                 container(name: 'cosign', shell: '/bin/sh') {
                     sh '''#!/bin/sh
                         echo "cosign"
-                        cosign sign -key cosign.key $BUILD_IMAGE -y --allow-insecure-registry --verbose
+                        COSIGN_PASSWORD=$COSIGN_KEY_PASSWORD cosign sign --key cosign.key $BUILD_IMAGE -y --allow-insecure-registry
                     '''
                 }
             }
