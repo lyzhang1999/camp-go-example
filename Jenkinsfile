@@ -1,5 +1,6 @@
 pipeline {
     agent none
+    options { skipDefaultCheckout() }
     stages {
 //         stage('Unit Test') {
 //             agent {
@@ -130,7 +131,6 @@ pipeline {
 //         }
 
         stage('Cosign Image') {
-            options { skipDefaultCheckout() }
             agent {
                 kubernetes {
                     defaultContainer 'cosign'
