@@ -31,48 +31,48 @@ spec:
             }
         }
 
-        stage('Scan Code with Sonarqube') {
-            agent {
-                kubernetes {
-                    defaultContainer 'sonar-scanner'
-                    yaml """
-kind: Pod
-spec:
-  containers:
-  - name: sonar-scanner
-    image: sonarsource/sonar-scanner-cli@sha256:e028b6fd811f0184a3ff7f223a66908c3c359fa559c97fa2ee87042c2b540415
-    imagePullPolicy: Always
-    command:
-    - sleep
-    args:
-    - 99d
-"""
-                }
-            }
+//         stage('Scan Code with Sonarqube') {
+//             agent {
+//                 kubernetes {
+//                     defaultContainer 'sonar-scanner'
+//                     yaml """
+// kind: Pod
+// spec:
+//   containers:
+//   - name: sonar-scanner
+//     image: sonarsource/sonar-scanner-cli@sha256:e028b6fd811f0184a3ff7f223a66908c3c359fa559c97fa2ee87042c2b540415
+//     imagePullPolicy: Always
+//     command:
+//     - sleep
+//     args:
+//     - 99d
+// """
+//                 }
+//             }
 
-            environment {
-                HARBOR_URL     = credentials('harbor-url')
-                SONAR_TOKEN     = credentials('sonarqube-token')
-                SONAR_SCANNER_OPTS = "-Dsonar.projectKey=camp-go-example -Dsonar.token=${SONAR_TOKEN}"
-                SONAR_HOST_URL = "http://sonar${HARBOR_URL.replaceAll('harbor','')}."
-            }
+//             environment {
+//                 HARBOR_URL     = credentials('harbor-url')
+//                 SONAR_TOKEN     = credentials('sonarqube-token')
+//                 SONAR_SCANNER_OPTS = "-Dsonar.projectKey=camp-go-example -Dsonar.token=${SONAR_TOKEN}"
+//                 SONAR_HOST_URL = "http://sonar${HARBOR_URL.replaceAll('harbor','')}."
+//             }
 
-            steps {
-                script {
-                    properties([pipelineTriggers([pollSCM('* * * * *')])])
-                }
-                container(name: 'sonar-scanner', shell: '/bin/sh') {
-                    withSonarQubeEnv('camp-go-example') {
-                        sh '''#!/bin/sh
-                            sonar-scanner
-                        '''
-                    }
-                    timeout(time: 1, unit: 'HOURS') {
-                        waitForQualityGate abortPipeline: true
-                    }
-                }
-            }
-        }
+//             steps {
+//                 script {
+//                     properties([pipelineTriggers([pollSCM('* * * * *')])])
+//                 }
+//                 container(name: 'sonar-scanner', shell: '/bin/sh') {
+//                     withSonarQubeEnv('camp-go-example') {
+//                         sh '''#!/bin/sh
+//                             sonar-scanner
+//                         '''
+//                     }
+//                     timeout(time: 1, unit: 'HOURS') {
+//                         waitForQualityGate abortPipeline: true
+//                     }
+//                 }
+//             }
+//         }
 
         stage('Build with Kaniko') {
             agent {
@@ -144,28 +144,6 @@ spec:
     - sleep
     args:
     - 99d
-    volumeMounts:
-      - name: jenkins-docker-cfg
-        mountPath: /home/nonroot/.docker
-      - name: cosign-key
-        mountPath: /home/nonroot
-  volumes:
-  - name: jenkins-docker-cfg
-    projected:
-      sources:
-      - secret:
-          name: regcred
-          items:
-            - key: .dockerconfigjson
-              path: config.json
-  - name: cosign-key
-    projected:
-      sources:
-      - secret:
-          name: cosign-key-file
-          items:
-            - key: cosign.key
-              path: cosign.key
 """
                 }
             }
