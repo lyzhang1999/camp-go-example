@@ -189,7 +189,7 @@ spec:
                 container(name: 'cosign', shell: '/bin/sh') {
                     sh '''#!/bin/sh
                         echo "cosign"
-                        cosign sign -key cosign.key ${BUILD_IMAGE} -y --allow-insecure-registry --verbose
+                        cosign sign -key cosign.key $BUILD_IMAGE -y --allow-insecure-registry --verbose
                     '''
                 }
             }
