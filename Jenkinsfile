@@ -171,7 +171,7 @@ spec:
             }
 
             options {
-                skipDefaultCheckout true
+                skipDefaultCheckout()
             }
             
             environment {
