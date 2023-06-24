@@ -138,7 +138,7 @@ kind: Pod
 spec:
   containers:
   - name: cosign
-    # can not use gcr.io/projectsigstore/cosign here, don't know why
+    # can not use official image: gcr.io/projectsigstore/cosign here, don't know why
     image: lyzhang1999/cosign:latest@sha256:8c09f25dc815584fa4840a4adb0263b96ed5d3275068e79e74c0f02e636d14dd
     imagePullPolicy: Always
     command:
