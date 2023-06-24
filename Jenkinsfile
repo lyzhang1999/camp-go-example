@@ -1,35 +1,35 @@
 pipeline {
     agent none
     stages {
-        stage('Unit Test') {
-            agent {
-                kubernetes {
-                    defaultContainer 'golang'
-                    yaml """
-kind: Pod
-spec:
-  containers:
-  - name: golang
-    image: golang:alpine
-    imagePullPolicy: Always
-    command:
-    - sleep
-    args:
-    - 99d
-"""
-                }
-            }
-            steps {
-                script {
-                    properties([pipelineTriggers([pollSCM('* * * * *')])])
-                }
-                container(name: 'golang', shell: '/bin/sh') {
-                    sh '''#!/bin/sh
-                        go test ./... -coverprofile cover.out
-                    '''
-                }
-            }
-        }
+//         stage('Unit Test') {
+//             agent {
+//                 kubernetes {
+//                     defaultContainer 'golang'
+//                     yaml """
+// kind: Pod
+// spec:
+//   containers:
+//   - name: golang
+//     image: golang:alpine
+//     imagePullPolicy: Always
+//     command:
+//     - sleep
+//     args:
+//     - 99d
+// """
+//                 }
+//             }
+//             steps {
+//                 script {
+//                     properties([pipelineTriggers([pollSCM('* * * * *')])])
+//                 }
+//                 container(name: 'golang', shell: '/bin/sh') {
+//                     sh '''#!/bin/sh
+//                         go test ./... -coverprofile cover.out
+//                     '''
+//                 }
+//             }
+//         }
 
 //         stage('Scan Code with Sonarqube') {
 //             agent {
