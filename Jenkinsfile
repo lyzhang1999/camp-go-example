@@ -40,7 +40,7 @@ kind: Pod
 spec:
   containers:
   - name: sonar-scanner
-    image: sonarsource/sonar-scanner-cli:latest
+    image: sonarsource/sonar-scanner-cli@sha256:e028b6fd811f0184a3ff7f223a66908c3c359fa559c97fa2ee87042c2b540415
     imagePullPolicy: Always
     command:
     - sleep
@@ -53,7 +53,7 @@ spec:
             environment {
                 HARBOR_URL     = credentials('harbor-url')
                 SONAR_TOKEN     = credentials('sonarqube-token')
-                SONAR_SCANNER_OPTS = "-Dsonar.projectKey=camp-go-example"
+                SONAR_SCANNER_OPTS = "-Dsonar.projectKey=camp-go-example -Dsonar.token=${SONAR_TOKEN}"
                 SONAR_HOST_URL = "http://sonar${HARBOR_URL.replaceAll('harbor','')}."
             }
 
