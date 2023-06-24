@@ -141,9 +141,13 @@ spec:
     image: bitnami/cosign:latest@sha256:c78a6bc4738ae5736d95c5dd5861974743b0232eb7ed4ffe3bc6270d8f9f188b
     imagePullPolicy: Always
     command:
-    - sleep
+    - cosign
     args:
-    - 99d
+    - sign
+    - --key
+    - cosign.key
+    - $BUILD_IMAGE
+    - -y
     volumeMounts:
       - name: jenkins-docker-cfg
         mountPath: /.docker
@@ -185,12 +189,12 @@ spec:
                 // script {
                 //     properties([pipelineTriggers([pollSCM('* * * * *')])])
                 // }
-                container(name: 'cosign', shell: '/bin/sh') {
-                    sh '''#!/bin/sh
-                        echo "cosign"
-                        COSIGN_PASSWORD=$COSIGN_KEY_PASSWORD cosign sign --key cosign.key $BUILD_IMAGE -y --allow-insecure-registry
-                    '''
-                }
+                // container(name: 'cosign', shell: '/bin/sh') {
+                //     sh '''#!/bin/sh
+                //         echo "cosign"
+                //         COSIGN_PASSWORD=$COSIGN_KEY_PASSWORD cosign sign --key cosign.key $BUILD_IMAGE -y --allow-insecure-registry
+                //     '''
+                // }
             }
         }
     }
