@@ -185,7 +185,10 @@ spec:
                 BUILD_IMAGE_LATEST="${IMAGE_PUSH_DESTINATION}:latest"
             }
 
-            //steps {
+            steps {
+                container('cosign') {
+                    sh 'echo "cosign"'
+                }
                 // script {
                 //     properties([pipelineTriggers([pollSCM('* * * * *')])])
                 // }
@@ -195,7 +198,7 @@ spec:
                 //         COSIGN_PASSWORD=$COSIGN_KEY_PASSWORD cosign sign --key cosign.key $BUILD_IMAGE -y --allow-insecure-registry
                 //     '''
                 // }
-            //}
+            }
         }
     }
 }
