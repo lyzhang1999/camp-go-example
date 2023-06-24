@@ -148,7 +148,7 @@ spec:
       - name: jenkins-docker-cfg
         mountPath: /.docker
       - name: cosign-key
-        mountPath: /home
+        mountPath: /tmp
   volumes:
   - name: jenkins-docker-cfg
     projected:
@@ -188,6 +188,7 @@ spec:
                 container(name: 'cosign', shell: '/bin/sh') {
                     sh '''#!/bin/sh
                         echo "cosign"
+                        #COSIGN_PASSWORD=$COSIGN_KEY_PASSWORD cosign sign -key /tmp/cosign.key ${BUILD_IMAGE} -y --allow-insecure-registry --verbose
                     '''
                 }
             }
