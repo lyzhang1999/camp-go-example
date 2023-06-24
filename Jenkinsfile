@@ -132,12 +132,12 @@ pipeline {
         stage('Cosign Image') {
             agent {
                 kubernetes {
-                    defaultContainer 'bitnami-cosign'
+                    defaultContainer 'cosign'
                     yaml """
 kind: Pod
 spec:
   containers:
-  - name: bitnami-cosign
+  - name: cosign
     image: bitnami/cosign:latest@sha256:c78a6bc4738ae5736d95c5dd5861974743b0232eb7ed4ffe3bc6270d8f9f188b
     imagePullPolicy: Always
     command:
@@ -148,7 +148,7 @@ spec:
       - name: jenkins-docker-cfg
         mountPath: /.docker
       - name: cosign-key
-        mountPath: /tmp
+        mountPath: /cosign-keys
   volumes:
   - name: jenkins-docker-cfg
     projected:
@@ -179,16 +179,17 @@ spec:
                 IMAGE_TAG = "${BRANCH_NAME}-${GIT_COMMIT}"
                 BUILD_IMAGE="${IMAGE_PUSH_DESTINATION}:${IMAGE_TAG}"
                 BUILD_IMAGE_LATEST="${IMAGE_PUSH_DESTINATION}:latest"
+                COSIGN_PASSWORD="${COSIGN_KEY_PASSWORD}"
             }
 
             steps {
                 // script {
                 //     properties([pipelineTriggers([pollSCM('* * * * *')])])
                 // }
-                container(name: 'bitnami-cosign', shell: '/bin/sh') {
-                    sh '''
+                container(name: 'cosign', shell: '/bin/sh') {
+                    sh '''#!/bin/sh
                         echo "cosign"
-                        #COSIGN_PASSWORD=$COSIGN_KEY_PASSWORD cosign sign -key /tmp/cosign.key ${BUILD_IMAGE} -y --allow-insecure-registry --verbose
+                        cosign sign -key cosign.key ${BUILD_IMAGE} -y --allow-insecure-registry --verbose
                     '''
                 }
             }
