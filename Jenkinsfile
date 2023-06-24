@@ -138,7 +138,7 @@ kind: Pod
 spec:
   containers:
   - name: cosign
-    image: bitnami/cosign:latest@sha256:c78a6bc4738ae5736d95c5dd5861974743b0232eb7ed4ffe3bc6270d8f9f188b
+    image: bitnami/minideb:bullseye
     imagePullPolicy: Always
     command:
     - sleep
@@ -182,19 +182,20 @@ spec:
             }
 
             steps {
-                container('cosign') {
-                    sh 'cosign image: $BUILD_IMAGE_LATEST'
-                    sh 'COSIGN_PASSWORD=$COSIGN_KEY_PASSWORD cosign sign --key cosign.key $BUILD_IMAGE_LATEST -y'
+                // container('cosign') {
+                //     sh 'cosign image: $BUILD_IMAGE_LATEST'
+                //     sh 'COSIGN_PASSWORD=$COSIGN_KEY_PASSWORD cosign sign --key cosign.key $BUILD_IMAGE_LATEST -y'
+                // }
+                
+                container(name: 'cosign', shell: '/bin/sh') {
+                    sh '''#!/bin/sh
+                        curl -O -L "https://github.com/sigstore/cosign/releases/latest/download/cosign-linux-amd64"
+                        mv cosign-linux-amd64 /usr/local/bin/cosign
+                        chmod +x /usr/local/bin/cosign
+
+                        COSIGN_PASSWORD=$COSIGN_KEY_PASSWORD cosign sign --key cosign.key $BUILD_IMAGE -y
+                    '''
                 }
-                // script {
-                //     properties([pipelineTriggers([pollSCM('* * * * *')])])
-                // }
-                // container(name: 'cosign', shell: '/bin/sh') {
-                //     sh '''#!/bin/sh
-                //         echo "cosign"
-                //         COSIGN_PASSWORD=$COSIGN_KEY_PASSWORD cosign sign --key cosign.key $BUILD_IMAGE -y --allow-insecure-registry
-                //     '''
-                // }
             }
         }
     }
