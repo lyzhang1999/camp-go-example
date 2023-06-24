@@ -137,7 +137,7 @@ spec:
 kind: Pod
 spec:
   containers:
-  - name: kaniko
+  - name: cosign
     image: gcr.io/projectsigstore/cosign:v2.1.0
     imagePullPolicy: Always
     command:
@@ -182,9 +182,9 @@ spec:
             }
 
             steps {
-                script {
-                    properties([pipelineTriggers([pollSCM('* * * * *')])])
-                }
+                // script {
+                //     properties([pipelineTriggers([pollSCM('* * * * *')])])
+                // }
                 container(name: 'cosign', shell: '/busybox/sh') {
                     withEnv(['PATH+EXTRA=/busybox']) {
                         sh '''#!/busybox/sh
