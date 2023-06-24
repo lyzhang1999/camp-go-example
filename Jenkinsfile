@@ -140,6 +140,9 @@ spec:
   - name: cosign
     image: bitnami/cosign:latest@sha256:c78a6bc4738ae5736d95c5dd5861974743b0232eb7ed4ffe3bc6270d8f9f188b
     imagePullPolicy: Always
+    env:
+    - name: COSIGN_PASSWORD
+      value: "password123"
     command:
     - cosign
     args:
