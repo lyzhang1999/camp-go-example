@@ -20,9 +20,9 @@ spec:
                 }
             }
             steps {
-                script {
-                    properties([pipelineTriggers([pollSCM('* * * * *')])])
-                }
+                // script {
+                //     properties([pipelineTriggers([pollSCM('* * * * *')])])
+                // }
                 container(name: 'golang', shell: '/bin/sh') {
                     sh '''#!/bin/sh
                         go test ./... -coverprofile cover.out
@@ -58,9 +58,9 @@ spec:
             }
 
             steps {
-                script {
-                    properties([pipelineTriggers([pollSCM('* * * * *')])])
-                }
+                // script {
+                //     properties([pipelineTriggers([pollSCM('* * * * *')])])
+                // }
                 container(name: 'sonar-scanner', shell: '/bin/sh') {
                     withSonarQubeEnv('camp-go-example') {
                         sh '''#!/bin/sh
@@ -116,9 +116,9 @@ spec:
             }
 
             steps {
-                script {
-                    properties([pipelineTriggers([pollSCM('* * * * *')])])
-                }
+                // script {
+                //     properties([pipelineTriggers([pollSCM('* * * * *')])])
+                // }
                 container(name: 'kaniko', shell: '/busybox/sh') {
                     withEnv(['PATH+EXTRA=/busybox']) {
                         sh '''#!/busybox/sh
