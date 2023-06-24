@@ -1,6 +1,5 @@
 pipeline {
     agent none
-    options { skipDefaultCheckout() }
     stages {
 //         stage('Unit Test') {
 //             agent {
@@ -187,11 +186,9 @@ spec:
                 //     properties([pipelineTriggers([pollSCM('* * * * *')])])
                 // }
                 container(name: 'cosign', shell: '/busybox/sh') {
-                    withEnv(['PATH+EXTRA=/busybox']) {
-                        sh '''#!/busybox/sh
-                            COSIGN_PASSWORD=$COSIGN_KEY_PASSWORD /ko-app/cosign sign -key /home/nonroot/cosign.key ${BUILD_IMAGE} -y
-                        '''
-                    }
+                    sh '''#!/busybox/sh
+                        COSIGN_PASSWORD=$COSIGN_KEY_PASSWORD /ko-app/cosign sign -key /home/nonroot/cosign.key ${BUILD_IMAGE} -y
+                    '''
                 }
             }
         }
