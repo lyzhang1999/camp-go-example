@@ -186,7 +186,7 @@ spec:
                 //     properties([pipelineTriggers([pollSCM('* * * * *')])])
                 // }
                 container(name: 'bitnami-cosign', shell: '/bin/sh') {
-                    sh '''#!/bin/sh
+                    sh '''
                         echo "cosign"
                         #COSIGN_PASSWORD=$COSIGN_KEY_PASSWORD cosign sign -key /tmp/cosign.key ${BUILD_IMAGE} -y --allow-insecure-registry --verbose
                     '''
