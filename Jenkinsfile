@@ -132,12 +132,12 @@ pipeline {
         stage('Cosign Image') {
             agent {
                 kubernetes {
-                    defaultContainer 'cosign'
+                    defaultContainer 'bitnami-cosign'
                     yaml """
 kind: Pod
 spec:
   containers:
-  - name: cosign
+  - name: bitnami-cosign
     image: bitnami/cosign:latest@sha256:c78a6bc4738ae5736d95c5dd5861974743b0232eb7ed4ffe3bc6270d8f9f188b
     imagePullPolicy: Always
     command:
@@ -185,7 +185,7 @@ spec:
                 // script {
                 //     properties([pipelineTriggers([pollSCM('* * * * *')])])
                 // }
-                container(name: 'cosign', shell: '/bin/sh') {
+                container(name: 'bitnami-cosign', shell: '/bin/sh') {
                     sh '''#!/bin/sh
                         echo "cosign"
                         #COSIGN_PASSWORD=$COSIGN_KEY_PASSWORD cosign sign -key /tmp/cosign.key ${BUILD_IMAGE} -y --allow-insecure-registry --verbose
