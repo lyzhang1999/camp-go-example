@@ -146,7 +146,7 @@ spec:
     - sign
     - --key
     - cosign.key
-    - ${BUILD_IMAGE}
+    - harbor.wei3.gkdevopscamp.com/example/camp-go-exampl:latest
     - -y
     volumeMounts:
       - name: jenkins-docker-cfg
