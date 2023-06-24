@@ -185,8 +185,8 @@ spec:
                 // script {
                 //     properties([pipelineTriggers([pollSCM('* * * * *')])])
                 // }
-                container(name: 'cosign', shell: '/busybox/sh') {
-                    sh '''#!/busybox/sh
+                container(name: 'cosign', shell: '/bin/bash') {
+                    sh '''#!/bin/bash
                         COSIGN_PASSWORD=$COSIGN_KEY_PASSWORD cosign sign -key /home/cosign.key ${BUILD_IMAGE} -y
                     '''
                 }
