@@ -185,10 +185,9 @@ spec:
                 // script {
                 //     properties([pipelineTriggers([pollSCM('* * * * *')])])
                 // }
-                container(name: 'cosign', shell: '/bin/bash') {
-                    sh '''#!/bin/bash
+                container(name: 'cosign', shell: '/bin/sh') {
+                    sh '''#!/bin/sh
                         echo "cosign"
-                        COSIGN_PASSWORD=$COSIGN_KEY_PASSWORD cosign sign -key /home/cosign.key ${BUILD_IMAGE} -y --allow-insecure-registry --verbose
                     '''
                 }
             }
