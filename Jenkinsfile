@@ -146,7 +146,7 @@ spec:
     - sign
     - --key
     - cosign.key
-    - $BUILD_IMAGE
+    - ${BUILD_IMAGE}
     - -y
     volumeMounts:
       - name: jenkins-docker-cfg
