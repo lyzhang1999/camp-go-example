@@ -1,5 +1,8 @@
 pipeline {
     agent none
+    options {
+        skipDefaultCheckout(true)
+    }
     stages {
 //         stage('Unit Test') {
 //             agent {
