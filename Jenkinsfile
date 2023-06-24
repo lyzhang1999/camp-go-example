@@ -140,17 +140,10 @@ spec:
   - name: cosign
     image: bitnami/cosign:latest@sha256:c78a6bc4738ae5736d95c5dd5861974743b0232eb7ed4ffe3bc6270d8f9f188b
     imagePullPolicy: Always
-    env:
-    - name: COSIGN_PASSWORD
-      value: "password123"
     command:
-    - cosign
+    - sleep
     args:
-    - sign
-    - --key
-    - cosign.key
-    - harbor.wei3.gkdevopscamp.com/example/camp-go-example:latest
-    - -y
+    - 99d
     volumeMounts:
       - name: jenkins-docker-cfg
         mountPath: /.docker
@@ -190,7 +183,8 @@ spec:
 
             steps {
                 container('cosign') {
-                    sh 'echo "cosign"'
+                    sh 'cosign image: $BUILD_IMAGE_LATEST'
+                    sh 'COSIGN_PASSWORD=$COSIGN_KEY_PASSWORD cosign sign --key cosign.key $BUILD_IMAGE_LATEST -y'
                 }
                 // script {
                 //     properties([pipelineTriggers([pollSCM('* * * * *')])])
