@@ -1,8 +1,5 @@
 pipeline {
     agent none
-    options {
-        skipDefaultCheckout(true)
-    }
     stages {
 //         stage('Unit Test') {
 //             agent {
@@ -173,6 +170,10 @@ spec:
                 }
             }
 
+            options {
+                skipDefaultCheckout true
+            }
+            
             environment {
                 HARBOR_URL     = credentials('harbor-url')
                 HARBOR_REPOSITORY     = credentials('harbor-repository')
