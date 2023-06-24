@@ -138,7 +138,8 @@ kind: Pod
 spec:
   containers:
   - name: cosign
-    image: lyzhang1999/cosign:latest@sha256:352f89f88d9fcf596a1e279e1f1d713cee677f5c75962691b879d9274925b851
+    # can not use gcr.io/projectsigstore/cosign here, don't know why
+    image: lyzhang1999/cosign:latest@sha256:971cf69a773f537af1cd3fc25d1c6961c86089a5e955419bb5cb1ffcf56845b6
     imagePullPolicy: Always
     command:
     - sleep
