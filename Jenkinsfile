@@ -130,7 +130,6 @@ spec:
         }
 
         stage('Cosign Image') {
-            options { skipDefaultCheckout() }
             agent {
                 kubernetes {
                     defaultContainer 'cosign'
@@ -183,9 +182,9 @@ spec:
             }
 
             steps {
-                // script {
-                //     properties([pipelineTriggers([pollSCM('* * * * *')])])
-                // }
+                script {
+                    properties([pipelineTriggers([pollSCM('* * * * *')])])
+                }
                 container(name: 'cosign', shell: '/busybox/sh') {
                     withEnv(['PATH+EXTRA=/busybox']) {
                         sh '''#!/busybox/sh
