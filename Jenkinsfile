@@ -138,7 +138,7 @@ kind: Pod
 spec:
   containers:
   - name: cosign
-    image: gcr.io/projectsigstore/cosign:v2.1.0
+    image: bitnami/cosign:latest@sha256:c78a6bc4738ae5736d95c5dd5861974743b0232eb7ed4ffe3bc6270d8f9f188b
     imagePullPolicy: Always
     command:
     - sleep
@@ -168,10 +168,6 @@ spec:
               path: cosign.key
 """
                 }
-            }
-
-            options {
-                skipDefaultCheckout()
             }
             
             environment {
