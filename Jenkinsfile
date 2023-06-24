@@ -146,9 +146,9 @@ spec:
     - 99d
     volumeMounts:
       - name: jenkins-docker-cfg
-        mountPath: /home/nonroot/.docker
+        mountPath: /.docker
       - name: cosign-key
-        mountPath: /home/nonroot
+        mountPath: /home
   volumes:
   - name: jenkins-docker-cfg
     projected:
@@ -187,7 +187,7 @@ spec:
                 // }
                 container(name: 'cosign', shell: '/busybox/sh') {
                     sh '''#!/busybox/sh
-                        COSIGN_PASSWORD=$COSIGN_KEY_PASSWORD /ko-app/cosign sign -key /home/nonroot/cosign.key ${BUILD_IMAGE} -y
+                        COSIGN_PASSWORD=$COSIGN_KEY_PASSWORD cosign sign -key /home/cosign.key ${BUILD_IMAGE} -y
                     '''
                 }
             }
