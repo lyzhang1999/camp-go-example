@@ -237,7 +237,7 @@ spec:
             steps {
                 container(name: 'grype', shell: '/bin/sh') {
                     sh '''#!/bin/sh
-                        grype $BUILD_IMAGE_LATEST --scope all-layers --fail-on high --add-cpes-if-none
+                        grype $BUILD_IMAGE --scope all-layers --fail-on high --add-cpes-if-none
                     '''
                 }
             }
