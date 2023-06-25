@@ -123,7 +123,7 @@ spec:
                 container(name: 'kaniko', shell: '/busybox/sh') {
                     withEnv(['PATH+EXTRA=/busybox']) {
                         sh '''#!/busybox/sh
-                            /kaniko/executor --force --context `pwd` --insecure --skip-tls-verify --cache=true --destination $BUILD_IMAGE --destination $BUILD_IMAGE_LATEST
+                            /kaniko/executor --force --context `pwd` --insecure --skip-tls-verify --cache=true --destination $BUILD_IMAGE --destination $BUILD_IMAGE_LATEST --push-retry=5
                         '''
                     }
                 }
@@ -237,7 +237,7 @@ spec:
             steps {
                 container(name: 'grype', shell: '/bin/sh') {
                     sh '''#!/bin/sh
-                        grype $BUILD_IMAGE --scope all-layers --fail-on high --add-cpes-if-none
+                        grype $BUILD_IMAGE --scope all-layers --fail-on high --add-cpes-if-none --show-suppressed
                     '''
                 }
             }
