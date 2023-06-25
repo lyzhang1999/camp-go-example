@@ -18,8 +18,10 @@ RUN CGO_ENABLED=0 go build -ldflags "-s -w \
     -X github.com/stefanprodan/podinfo/pkg/version.REVISION=${REVISION}" \
     -a -o bin/podcli cmd/podcli/*
 
-# FROM alpine:3.17
-FROM alpine:3.18.2
+# alpine:3.17 vulnerabilities
+
+FROM alpine:3.17
+# FROM alpine:3.18.2
 
 ARG BUILD_DATE
 ARG VERSION
