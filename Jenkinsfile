@@ -84,7 +84,7 @@ kind: Pod
 spec:
   containers:
   - name: kaniko
-    image: gcr.io/kaniko-project/executor:v1.6.0-debug
+    image: gcr.io/kaniko-project/executor:v1.11.0-debug
     imagePullPolicy: Always
     command:
     - sleep
@@ -123,8 +123,7 @@ spec:
                 container(name: 'kaniko', shell: '/busybox/sh') {
                     withEnv(['PATH+EXTRA=/busybox']) {
                         sh '''#!/busybox/sh
-                            # --cache=true disabled
-                            /kaniko/executor --force --context `pwd` --insecure --skip-tls-verify --destination $BUILD_IMAGE --destination $BUILD_IMAGE_LATEST --push-retry=5
+                            /kaniko/executor --force --context `pwd` --insecure --skip-tls-verify --cache=true --destination $BUILD_IMAGE --destination $BUILD_IMAGE_LATEST --push-retry=5
                         '''
                     }
                 }
