@@ -230,7 +230,7 @@ spec:
                 container(name: 'crane', shell: '/busybox/sh') {
                     sh '''#!/busybox/sh
                         crane push /home/jenkins/agent/image.tar $BUILD_IMAGE
-                        
+                        crane tag $BUILD_IMAGE latest
                     '''
                 }
             }
