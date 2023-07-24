@@ -79,6 +79,7 @@ spec:
             agent {
                 kubernetes {
                     defaultContainer 'kaniko'
+                    workspaceVolume persistentVolumeClaimWorkspaceVolume(claimName: "jenkins-workspace-pvc", readOnly: false)
                     yaml """
 kind: Pod
 spec:
@@ -123,9 +124,118 @@ spec:
                 container(name: 'kaniko', shell: '/busybox/sh') {
                     withEnv(['PATH+EXTRA=/busybox']) {
                         sh '''#!/busybox/sh
-                            /kaniko/executor --force --context `pwd` --insecure --skip-tls-verify --cache=true --destination $BUILD_IMAGE --destination $BUILD_IMAGE_LATEST --push-retry=5
+                            # /kaniko/executor --force --context `pwd` --insecure --skip-tls-verify --cache=true --destination $BUILD_IMAGE --destination $BUILD_IMAGE_LATEST --push-retry=5
+                            /kaniko/executor --force --context `pwd` --insecure --skip-tls-verify --cache=true --destination $BUILD_IMAGE --tar-path=/workspace/image.tar --no-push
                         '''
                     }
+                }
+            }
+        }
+
+        stage('Scan Image with Grype') {
+            agent {
+                kubernetes {
+                    defaultContainer 'grype'
+                    workspaceVolume persistentVolumeClaimWorkspaceVolume(claimName: "jenkins-workspace-pvc", readOnly: false)
+                    yaml """
+kind: Pod
+spec:
+  containers:
+  - name: grype
+    image: lyzhang1999/grype:latest@sha256:ca4ff9625f632d3a5e686089f4fa88068f5aa5cc8fa7d49115397f035f04e65a
+    imagePullPolicy: Always
+    command:
+    - sleep
+    args:
+    - 99d
+    volumeMounts:
+      - name: jenkins-docker-cfg
+        mountPath: /root/.docker
+  volumes:
+  - name: jenkins-docker-cfg
+    projected:
+      sources:
+      - secret:
+          name: regcred
+          items:
+            - key: .dockerconfigjson
+              path: config.json
+"""
+                }
+            }
+            
+            environment {
+                HARBOR_URL     = credentials('harbor-url')
+                HARBOR_REPOSITORY     = credentials('harbor-repository')
+                COSIGN_KEY_PASSWORD = credentials('cosign-key-password')
+                IMAGE_PUSH_DESTINATION="${HARBOR_URL}/${HARBOR_REPOSITORY}/camp-go-example"
+                GIT_COMMIT="${checkout (scm).GIT_COMMIT}"
+                IMAGE_TAG = "${BRANCH_NAME}-${GIT_COMMIT}"
+                BUILD_IMAGE="${IMAGE_PUSH_DESTINATION}:${IMAGE_TAG}"
+                BUILD_IMAGE_LATEST="${IMAGE_PUSH_DESTINATION}:latest"
+            }
+
+            steps {
+                container(name: 'grype', shell: '/bin/sh') {
+                    sh '''#!/bin/sh
+                        ls -l /workspace
+                        grype /workspace/image.tar --fail-on high
+                        # grype $BUILD_IMAGE --fail-on high
+                    '''
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            agent {
+                kubernetes {
+                    defaultContainer 'crane'
+                    workspaceVolume persistentVolumeClaimWorkspaceVolume(claimName: "jenkins-workspace-pvc", readOnly: false)
+                    yaml """
+kind: Pod
+spec:
+  containers:
+  - name: crane
+    image: gcr.io/go-containerregistry/crane:debug
+    imagePullPolicy: Always
+    command:
+    - sleep
+    args:
+    - 99d
+    volumeMounts:
+      - name: jenkins-docker-cfg
+        mountPath: /root/.docker
+  volumes:
+  - name: jenkins-docker-cfg
+    projected:
+      sources:
+      - secret:
+          name: regcred
+          items:
+            - key: .dockerconfigjson
+              path: config.json
+"""
+                }
+            }
+            
+            environment {
+                HARBOR_URL     = credentials('harbor-url')
+                HARBOR_REPOSITORY     = credentials('harbor-repository')
+                COSIGN_KEY_PASSWORD = credentials('cosign-key-password')
+                IMAGE_PUSH_DESTINATION="${HARBOR_URL}/${HARBOR_REPOSITORY}/camp-go-example"
+                GIT_COMMIT="${checkout (scm).GIT_COMMIT}"
+                IMAGE_TAG = "${BRANCH_NAME}-${GIT_COMMIT}"
+                BUILD_IMAGE="${IMAGE_PUSH_DESTINATION}:${IMAGE_TAG}"
+                BUILD_IMAGE_LATEST="${IMAGE_PUSH_DESTINATION}:latest"
+            }
+
+            steps {
+                container(name: 'crane', shell: '/bin/sh') {
+                    sh '''#!/bin/sh
+                        ls -l /workspace
+                        crane push /workspace/image.tar $BUILD_IMAGE
+                        crane push /workspace/image.tar $BUILD_IMAGE_LATEST
+                    '''
                 }
             }
         }
@@ -187,57 +297,6 @@ spec:
                 container(name: 'cosign', shell: '/bin/sh') {
                     sh '''#!/bin/sh
                         COSIGN_PASSWORD=$COSIGN_KEY_PASSWORD cosign sign --key /root/cosign.key $BUILD_IMAGE -y
-                    '''
-                }
-            }
-        }
-
-        stage('Scan Image with Grype') {
-            agent {
-                kubernetes {
-                    defaultContainer 'grype'
-                    yaml """
-kind: Pod
-spec:
-  containers:
-  - name: grype
-    image: lyzhang1999/grype:latest@sha256:ca4ff9625f632d3a5e686089f4fa88068f5aa5cc8fa7d49115397f035f04e65a
-    imagePullPolicy: Always
-    command:
-    - sleep
-    args:
-    - 99d
-    volumeMounts:
-      - name: jenkins-docker-cfg
-        mountPath: /root/.docker
-  volumes:
-  - name: jenkins-docker-cfg
-    projected:
-      sources:
-      - secret:
-          name: regcred
-          items:
-            - key: .dockerconfigjson
-              path: config.json
-"""
-                }
-            }
-            
-            environment {
-                HARBOR_URL     = credentials('harbor-url')
-                HARBOR_REPOSITORY     = credentials('harbor-repository')
-                COSIGN_KEY_PASSWORD = credentials('cosign-key-password')
-                IMAGE_PUSH_DESTINATION="${HARBOR_URL}/${HARBOR_REPOSITORY}/camp-go-example"
-                GIT_COMMIT="${checkout (scm).GIT_COMMIT}"
-                IMAGE_TAG = "${BRANCH_NAME}-${GIT_COMMIT}"
-                BUILD_IMAGE="${IMAGE_PUSH_DESTINATION}:${IMAGE_TAG}"
-                BUILD_IMAGE_LATEST="${IMAGE_PUSH_DESTINATION}:latest"
-            }
-
-            steps {
-                container(name: 'grype', shell: '/bin/sh') {
-                    sh '''#!/bin/sh
-                        grype $BUILD_IMAGE --fail-on high
                     '''
                 }
             }
