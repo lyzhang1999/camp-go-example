@@ -125,7 +125,7 @@ spec:
                     withEnv(['PATH+EXTRA=/busybox']) {
                         sh '''#!/busybox/sh
                             # /kaniko/executor --force --context `pwd` --insecure --skip-tls-verify --cache=true --destination $BUILD_IMAGE --destination $BUILD_IMAGE_LATEST --push-retry=5
-                            /kaniko/executor --force --context `pwd` --insecure --skip-tls-verify --cache=true --destination $BUILD_IMAGE --tar-path=/workspace/image.tar --no-push
+                            /kaniko/executor --force --context `pwd` --insecure --skip-tls-verify --cache=true --destination $BUILD_IMAGE --tar-path=/workspace/image.tar --no-push --cache-repo=$HARBOR_URL
                         '''
                     }
                 }
