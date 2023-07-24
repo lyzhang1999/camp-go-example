@@ -124,7 +124,7 @@ spec:
                 container(name: 'kaniko', shell: '/busybox/sh') {
                     withEnv(['PATH+EXTRA=/busybox']) {
                         sh '''#!/busybox/sh
-                            /kaniko/executor --force --context `pwd` --insecure --skip-tls-verify --cache=true --destination $BUILD_IMAGE --tar-path=/opt/workspace/image.tar --no-push --cache-repo=$IMAGE_PUSH_DESTINATION
+                            /kaniko/executor --force --context `pwd` --insecure --skip-tls-verify --cache=true --destination $BUILD_IMAGE --tar-path=/home/jenkins/agent/image.tar --no-push --cache-repo=$IMAGE_PUSH_DESTINATION
                         '''
                     }
                 }
@@ -178,7 +178,7 @@ spec:
                 container(name: 'grype', shell: '/bin/sh') {
                     sh '''#!/bin/sh
                         ls -l /workspace
-                        grype /opt/workspace/image.tar --fail-on high
+                        grype /home/jenkins/agent/image.tar --fail-on high
                         # grype $BUILD_IMAGE --fail-on high
                     '''
                 }
@@ -232,8 +232,8 @@ spec:
                 container(name: 'crane', shell: '/bin/sh') {
                     sh '''#!/bin/sh
                         ls -l /workspace
-                        crane push /opt/workspace/image.tar $BUILD_IMAGE
-                        crane push /opt/workspace/image.tar $BUILD_IMAGE_LATEST
+                        crane push /home/jenkins/agent/image.tar $BUILD_IMAGE
+                        crane push /home/jenkins/agent/image.tar $BUILD_IMAGE_LATEST
                     '''
                 }
             }
