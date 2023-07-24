@@ -124,8 +124,7 @@ spec:
                 container(name: 'kaniko', shell: '/busybox/sh') {
                     withEnv(['PATH+EXTRA=/busybox']) {
                         sh '''#!/busybox/sh
-                            # /kaniko/executor --force --context `pwd` --insecure --skip-tls-verify --cache=true --destination $BUILD_IMAGE --destination $BUILD_IMAGE_LATEST --push-retry=5
-                            /kaniko/executor --force --context `pwd` --insecure --skip-tls-verify --cache=true --destination $BUILD_IMAGE --tar-path=/workspace/image.tar --no-push --cache-repo=$IMAGE_PUSH_DESTINATION
+                            /kaniko/executor --force --context `pwd` --insecure --skip-tls-verify --cache=true --destination $BUILD_IMAGE --tar-path=/opt/workspace/image.tar --no-push --cache-repo=$IMAGE_PUSH_DESTINATION
                         '''
                     }
                 }
@@ -179,7 +178,7 @@ spec:
                 container(name: 'grype', shell: '/bin/sh') {
                     sh '''#!/bin/sh
                         ls -l /workspace
-                        grype /workspace/image.tar --fail-on high
+                        grype /opt/workspace/image.tar --fail-on high
                         # grype $BUILD_IMAGE --fail-on high
                     '''
                 }
@@ -233,8 +232,8 @@ spec:
                 container(name: 'crane', shell: '/bin/sh') {
                     sh '''#!/bin/sh
                         ls -l /workspace
-                        crane push /workspace/image.tar $BUILD_IMAGE
-                        crane push /workspace/image.tar $BUILD_IMAGE_LATEST
+                        crane push /opt/workspace/image.tar $BUILD_IMAGE
+                        crane push /opt/workspace/image.tar $BUILD_IMAGE_LATEST
                     '''
                 }
             }
