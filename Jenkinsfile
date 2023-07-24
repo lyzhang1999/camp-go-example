@@ -124,7 +124,7 @@ spec:
                 container(name: 'kaniko', shell: '/busybox/sh') {
                     withEnv(['PATH+EXTRA=/busybox']) {
                         sh '''#!/busybox/sh
-                            /kaniko/executor --force --context `pwd` --insecure --skip-tls-verify --cache=true --destination $BUILD_IMAGE --tar-path=/home/jenkins/agent/image.tar --no-push --cache-repo=$IMAGE_PUSH_DESTINATION
+                            /kaniko/executor --force --context `pwd` --destination $BUILD_IMAGE --tar-path=/home/jenkins/agent/image.tar --no-push
                         '''
                     }
                 }
