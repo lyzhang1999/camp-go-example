@@ -183,7 +183,7 @@ spec:
             }
         }
 
-        stage('Push Docker Image') {
+        stage('Crane Push Docker Image') {
             agent {
                 kubernetes {
                     defaultContainer 'crane'
@@ -227,8 +227,8 @@ spec:
             }
 
             steps {
-                container(name: 'crane', shell: '/bin/sh') {
-                    sh '''#!/bin/sh
+                container(name: 'crane', shell: '/busybox/sh') {
+                    sh '''#!/busybox/sh
                         crane push /home/jenkins/agent/image.tar $BUILD_IMAGE
                         crane push /home/jenkins/agent/image.tar $BUILD_IMAGE_LATEST
                     '''
