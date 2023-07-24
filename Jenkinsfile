@@ -177,9 +177,7 @@ spec:
             steps {
                 container(name: 'grype', shell: '/bin/sh') {
                     sh '''#!/bin/sh
-                        ls -l /workspace
                         grype /home/jenkins/agent/image.tar --fail-on high
-                        # grype $BUILD_IMAGE --fail-on high
                     '''
                 }
             }
@@ -195,7 +193,7 @@ kind: Pod
 spec:
   containers:
   - name: crane
-    image: gcr.io/go-containerregistry/crane:debug
+    image: gcr.io/go-containerregistry/crane/debug:latest
     imagePullPolicy: Always
     command:
     - sleep
@@ -231,7 +229,6 @@ spec:
             steps {
                 container(name: 'crane', shell: '/bin/sh') {
                     sh '''#!/bin/sh
-                        ls -l /workspace
                         crane push /home/jenkins/agent/image.tar $BUILD_IMAGE
                         crane push /home/jenkins/agent/image.tar $BUILD_IMAGE_LATEST
                     '''
