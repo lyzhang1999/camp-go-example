@@ -124,7 +124,7 @@ spec:
                 container(name: 'kaniko', shell: '/busybox/sh') {
                     withEnv(['PATH+EXTRA=/busybox']) {
                         sh '''#!/busybox/sh
-                            /kaniko/executor --force --context `pwd` --destination $BUILD_IMAGE --tar-path=/home/jenkins/agent/image.tar --no-push
+                            /kaniko/executor --force --context `pwd` --destination $IMAGE_PUSH_DESTINATION --tar-path=/home/jenkins/agent/image.tar --no-push
                         '''
                     }
                 }
@@ -229,7 +229,7 @@ spec:
             steps {
                 container(name: 'crane', shell: '/busybox/sh') {
                     sh '''#!/busybox/sh
-                        crane push /home/jenkins/agent/image.tar $BUILD_IMAGE
+                        crane push /home/jenkins/agent/image.tar $BUILD_IMAGE --insecure
                     '''
                 }
             }
@@ -306,7 +306,7 @@ spec:
                 }
                 container(name: 'crane', shell: '/busybox/sh') {
                     sh '''#!/busybox/sh
-                        crane cp $BUILD_IMAGE $BUILD_IMAGE_LATEST
+                        crane tag $BUILD_IMAGE latest -v --insecure
                     '''
                 }
             }
