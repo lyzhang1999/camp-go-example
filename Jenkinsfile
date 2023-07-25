@@ -306,7 +306,8 @@ spec:
                 }
                 container(name: 'crane', shell: '/busybox/sh') {
                     sh '''#!/busybox/sh
-                        crane tag $BUILD_IMAGE test -v --insecure
+                        crane delete $BUILD_IMAGE_LATEST --insecure
+                        crane tag $BUILD_IMAGE latest --insecure
                     '''
                 }
             }
