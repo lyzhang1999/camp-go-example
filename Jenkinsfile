@@ -306,7 +306,7 @@ spec:
                 }
                 container(name: 'crane', shell: '/busybox/sh') {
                     sh '''#!/busybox/sh
-                        crane tag $BUILD_IMAGE latest
+                        crane cp $BUILD_IMAGE $BUILD_IMAGE_LATEST
                     '''
                 }
             }
