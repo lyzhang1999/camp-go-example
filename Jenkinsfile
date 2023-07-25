@@ -265,7 +265,7 @@ spec:
     - 99d
     volumeMounts:
       - name: jenkins-docker-cfg
-        mountPath: /root/.docker
+        mountPath: /home/.docker
   volumes:
   - name: jenkins-docker-cfg
     projected:
