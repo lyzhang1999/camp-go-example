@@ -2,78 +2,72 @@ pipeline {
     agent none
     stages {
 
-//         stage('Unit Test') {
-//             agent {
-//                 kubernetes {
-//                     defaultContainer 'golang'
-//                     yaml """
-// kind: Pod
-// spec:
-//   containers:
-//   - name: golang
-//     image: golang:alpine
-//     imagePullPolicy: Always
-//     command:
-//     - sleep
-//     args:
-//     - 99d
-// """
-//                 }
-//             }
-//             steps {
-//                 // script {
-//                 //     properties([pipelineTriggers([pollSCM('* * * * *')])])
-//                 // }
-//                 container(name: 'golang', shell: '/bin/sh') {
-//                     sh '''#!/bin/sh
-//                         go test ./... -coverprofile cover.out
-//                     '''
-//                 }
-//             }
-//         }
+        stage('Unit Test') {
+            agent {
+                kubernetes {
+                    defaultContainer 'golang'
+                    yaml """
+kind: Pod
+spec:
+  containers:
+  - name: golang
+    image: golang:alpine
+    imagePullPolicy: Always
+    command:
+    - sleep
+    args:
+    - 99d
+"""
+                }
+            }
+            steps {
+                container(name: 'golang', shell: '/bin/sh') {
+                    sh '''#!/bin/sh
+                        go test ./... -coverprofile cover.out
+                    '''
+                }
+            }
+        }
 
-//         stage('Scan Code with Sonarqube') {
-//             agent {
-//                 kubernetes {
-//                     defaultContainer 'sonar-scanner'
-//                     yaml """
-// kind: Pod
-// spec:
-//   containers:
-//   - name: sonar-scanner
-//     image: sonarsource/sonar-scanner-cli@sha256:e028b6fd811f0184a3ff7f223a66908c3c359fa559c97fa2ee87042c2b540415
-//     imagePullPolicy: Always
-//     command:
-//     - sleep
-//     args:
-//     - 99d
-// """
-//                 }
-//             }
+        stage('Scan Code with Sonarqube') {
+            agent {
+                kubernetes {
+                    defaultContainer 'sonar-scanner'
+                    yaml """
+kind: Pod
+spec:
+  containers:
+  - name: sonar-scanner
+    image: sonarsource/sonar-scanner-cli@sha256:e028b6fd811f0184a3ff7f223a66908c3c359fa559c97fa2ee87042c2b540415
+    imagePullPolicy: Always
+    command:
+    - sleep
+    args:
+    - 99d
+"""
+                }
+            }
 
-//             environment {
-//                 HARBOR_URL     = credentials('harbor-url')
-//                 SONAR_TOKEN     = credentials('sonarqube-token')
-//                 SONAR_SCANNER_OPTS = "-Dsonar.projectKey=camp-go-example -Dsonar.token=${SONAR_TOKEN}"
-//                 SONAR_HOST_URL = "http://sonar${HARBOR_URL.replaceAll('harbor','')}."
-//             }
+            environment {
+                HARBOR_URL     = credentials('harbor-url')
+                SONAR_TOKEN     = credentials('sonarqube-token')
+                SONAR_SCANNER_OPTS = "-Dsonar.projectKey=camp-go-example -Dsonar.token=${SONAR_TOKEN}"
+                SONAR_HOST_URL = "http://sonar${HARBOR_URL.replaceAll('harbor','')}."
+            }
 
-//             steps {
-//                 // script {
-//                 //     properties([pipelineTriggers([pollSCM('* * * * *')])])
-//                 // }
-//                 container(name: 'sonar-scanner', shell: '/bin/sh') {
-//                     withSonarQubeEnv('camp-go-example') {
-//                         sh '''#!/bin/sh
-//                             sonar-scanner
-//                         '''
-//                     }
-//                     timeout(time: 1, unit: 'HOURS') {
-//                         waitForQualityGate abortPipeline: true
-//                     }
-//                 }
-//             }
-//         }
+            steps {
+                container(name: 'sonar-scanner', shell: '/bin/sh') {
+                    withSonarQubeEnv('camp-go-example') {
+                        sh '''#!/bin/sh
+                            sonar-scanner
+                        '''
+                    }
+                    timeout(time: 1, unit: 'HOURS') {
+                        waitForQualityGate abortPipeline: true
+                    }
+                }
+            }
+        }
 
         stage('Build with Kaniko') {
             agent {
@@ -118,9 +112,6 @@ spec:
             }
 
             steps {
-                // script {
-                //     properties([pipelineTriggers([pollSCM('* * * * *')])])
-                // }
                 container(name: 'kaniko', shell: '/busybox/sh') {
                     withEnv(['PATH+EXTRA=/busybox']) {
                         sh '''#!/busybox/sh
@@ -311,6 +302,5 @@ spec:
                 }
             }
         }
-
     }
 }
