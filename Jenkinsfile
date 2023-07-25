@@ -265,7 +265,7 @@ spec:
     - 99d
     volumeMounts:
       - name: jenkins-docker-cfg
-        mountPath: /home/.docker
+        mountPath: /root/.docker
   volumes:
   - name: jenkins-docker-cfg
     projected:
@@ -306,7 +306,7 @@ spec:
                 }
                 container(name: 'crane', shell: '/busybox/sh') {
                     sh '''#!/busybox/sh
-                        crane tag $BUILD_IMAGE latest -v --insecure
+                        crane tag $BUILD_IMAGE test -v --insecure
                     '''
                 }
             }
