@@ -230,7 +230,6 @@ spec:
                 container(name: 'crane', shell: '/busybox/sh') {
                     sh '''#!/busybox/sh
                         crane push /home/jenkins/agent/image.tar $BUILD_IMAGE
-                        crane tag $BUILD_IMAGE latest
                     '''
                 }
             }
@@ -257,6 +256,16 @@ spec:
         mountPath: /root/.docker
       - name: cosign-key
         mountPath: /root
+  - name: crane
+    image: gcr.io/go-containerregistry/crane/debug:latest
+    imagePullPolicy: Always
+    command:
+    - sleep
+    args:
+    - 99d
+    volumeMounts:
+      - name: jenkins-docker-cfg
+        mountPath: /root/.docker
   volumes:
   - name: jenkins-docker-cfg
     projected:
@@ -293,6 +302,11 @@ spec:
                 container(name: 'cosign', shell: '/bin/sh') {
                     sh '''#!/bin/sh
                         COSIGN_PASSWORD=$COSIGN_KEY_PASSWORD cosign sign --key /root/cosign.key $BUILD_IMAGE -y
+                    '''
+                }
+                container(name: 'crane', shell: '/busybox/sh') {
+                    sh '''#!/busybox/sh
+                        crane tag $BUILD_IMAGE latest
                     '''
                 }
             }
