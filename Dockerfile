@@ -20,7 +20,7 @@ RUN CGO_ENABLED=0 go build -ldflags "-s -w \
 
 # alpine:3.17 vulnerabilities
 
-FROM alpine:3.17
+FROM golang:1.16-alpine
 # FROM alpine:3.18.2
 
 ARG BUILD_DATE
