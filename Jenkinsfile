@@ -292,7 +292,9 @@ spec:
             steps {
                 container(name: 'cosign', shell: '/bin/sh') {
                     sh '''#!/bin/sh
-                        COSIGN_PASSWORD=$COSIGN_KEY_PASSWORD cosign sign --key /root/cosign.key $BUILD_IMAGE -y
+                        until COSIGN_PASSWORD=$COSIGN_KEY_PASSWORD cosign sign --key /root/cosign.key $BUILD_IMAGE -y; do
+                          echo "Waiting for harbor scan image"
+                        done
                     '''
                 }
                 container(name: 'crane', shell: '/busybox/sh') {
