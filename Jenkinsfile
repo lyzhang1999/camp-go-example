@@ -299,7 +299,9 @@ spec:
                 }
                 container(name: 'crane', shell: '/busybox/sh') {
                     sh '''#!/busybox/sh
-                        crane tag $BUILD_IMAGE latest --insecure
+                        until crane tag $BUILD_IMAGE latest --insecure; do
+                          echo "Waiting for harbor scan image"
+                        done
                     '''
                 }
             }
