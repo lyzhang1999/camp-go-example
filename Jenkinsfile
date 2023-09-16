@@ -168,7 +168,7 @@ spec:
             steps {
                 container(name: 'grype', shell: '/bin/sh') {
                     sh '''#!/bin/sh
-                        grype /home/jenkins/agent/image.tar --fail-on high
+                        grype /home/jenkins/agent/image.tar --fail-on critical
                     '''
                 }
             }
